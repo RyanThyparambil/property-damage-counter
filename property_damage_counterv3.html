@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Property Damage Counter</title>
+    <style>
+        body {
+            background-color: black;
+            color: purple;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .counter {
+            font-size: 3em;
+            text-align: center;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="counter" id="damageCounter">$115,000,000,000</div>
+
+    <script>
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function updateCounter() {
+            const startValue = 115000000000; // Initial value from the report
+            const incrementPerSecond = 115000000000 / (365 * 24 * 60 * 60); // Increment per second
+
+            const counterElement = document.getElementById('damageCounter');
+            let currentValue = startValue;
+
+            setInterval(() => {
+                currentValue += incrementPerSecond;
+                counterElement.textContent = `$${formatNumber(Math.floor(currentValue))}`;
+            }, 1000);
+        }
+
+        updateCounter();
+    </script>
+</body>
+</html>
