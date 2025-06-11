@@ -2,22 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Live Counter</title>
+  <title>Live Car Accident Cost Counter</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
   <style>
-    html, body {
+    body {
+      background: transparent; /* Fully transparent background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       margin: 0;
-      padding: 0;
-      background: transparent;
       font-family: 'Poppins', sans-serif;
     }
 
-    .wrapper {
-      width: max-content;
+    .center-wrapper {
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 20px;
     }
 
     .counter {
@@ -29,7 +29,7 @@
       width: 60px;
       height: 80px;
       overflow: hidden;
-      background: white;
+      background: white; /* White cards */
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(0,0,0,0.4);
       position: relative;
@@ -49,7 +49,7 @@
       align-items: center;
       justify-content: center;
       font-size: 2.8em;
-      color: black;
+      color: black; /* Black digits */
     }
 
     .dollar {
@@ -60,69 +60,71 @@
   </style>
 </head>
 <body>
-  <div class="wrapper">
+  <div class="center-wrapper">
     <div class="dollar">$</div>
     <div class="counter" id="counter"></div>
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const START_DATE = new Date('2025-01-01T00:00:00Z').getTime();
-      const DOLLARS_PER_SECOND = 10775;
-      const DIGIT_HEIGHT = 80;
+    const START_DATE = new Date('2025-01-01T00:00:00Z').getTime();
+    const DOLLARS_PER_SECOND = 10775;
+    const DIGIT_HEIGHT = 80;
 
-      const counter = document.getElementById('counter');
-      let digitStates = [];
+    const counter = document.getElementById('counter');
+    let digitStates = [];
 
-      function createDigitElement() {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'digit-wrapper';
+    function createDigitElement() {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'digit-wrapper';
 
-        const wheel = document.createElement('div');
-        wheel.className = 'rotary-wheel';
+      const wheel = document.createElement('div');
+      wheel.className = 'rotary-wheel';
 
-        for (let i = 0; i <= 9; i++) {
-          const digit = document.createElement('div');
-          digit.className = 'rotary-digit';
-          digit.textContent = i;
-          wheel.appendChild(digit);
+      for (let i = 0; i <= 9; i++) {
+        const digit = document.createElement('div');
+        digit.className = 'rotary-digit';
+        digit.textContent = i;
+        wheel.appendChild(digit);
+      }
+
+      wrapper.appendChild(wheel);
+      return { wrapper, wheel };
+    }
+
+    function updateDigits(numberStr) {
+      const digits = numberStr.replace(/,/g, '').split('');
+
+      // Add new digit slots if needed
+      while (digitStates.length < digits.length) {
+        const { wrapper, wheel } = createDigitElement();
+        counter.appendChild(wrapper);
+        digitStates.push({ wheel, value: '0' });
+      }
+
+      // Update each digit's wheel position
+      digits.forEach((digit, i) => {
+        if (!/\d/.test(digit)) return;
+
+        const state = digitStates[i];
+        if (state.value !== digit) {
+          const yOffset = -parseInt(digit) * DIGIT_HEIGHT;
+          state.wheel.style.transform = `translateY(${yOffset}px)`;
+          state.value = digit;
         }
+      });
+    }
 
-        wrapper.appendChild(wheel);
-        return { wrapper, wheel };
-      }
+    function updateCounter() {
+      const now = Date.now();
+      const seconds = Math.floor((now - START_DATE) / 1000);
+      const cost = seconds * DOLLARS_PER_SECOND;
+      const formatted = Math.floor(cost).toLocaleString('en-US');
+      updateDigits(formatted);
+    }
 
-      function updateDigits(numberStr) {
-        const digits = numberStr.replace(/,/g, '').split('');
-
-        while (digitStates.length < digits.length) {
-          const { wrapper, wheel } = createDigitElement();
-          counter.appendChild(wrapper);
-          digitStates.push({ wheel, value: '0' });
-        }
-
-        digits.forEach((digit, i) => {
-          if (!/\d/.test(digit)) return;
-          const state = digitStates[i];
-          if (state.value !== digit) {
-            const yOffset = -parseInt(digit) * DIGIT_HEIGHT;
-            state.wheel.style.transform = `translateY(${yOffset}px)`;
-            state.value = digit;
-          }
-        });
-      }
-
-      function updateCounter() {
-        const now = Date.now();
-        const seconds = Math.floor((now - START_DATE) / 1000);
-        const cost = seconds * DOLLARS_PER_SECOND;
-        const formatted = Math.floor(cost).toLocaleString('en-US');
-        updateDigits(formatted);
-      }
-
-      setInterval(updateCounter, 1000);
-      updateCounter();
-    });
+    // Start and update every second
+    setInterval(updateCounter, 1000);
+    updateCounter();
   </script>
 </body>
 </html>
