@@ -1,130 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Live Car Accident Cost Counter</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      background: transparent; /* Fully transparent background */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-    }
+  <meta charset="UTF-8" />
+  <title>Live Car Accident Cost Counter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #b3eeee; /* Changed background to the specified color */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+    }
 
-    .center-wrapper {
-      display: flex;
-      align-items: center;
-    }
+    .center-wrapper {
+      display: flex;
+      align-items: center;
+    }
 
-    .counter {
-      display: flex;
-      gap: 6px;
-    }
+    .counter {
+      display: flex;
+      gap: 6px;
+    }
 
-    .digit-wrapper {
-      width: 60px;
-      height: 80px;
-      overflow: hidden;
-      background: white; /* White cards */
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.4);
-      position: relative;
-    }
+    .digit-wrapper {
+      width: 60px;
+      height: 80px;
+      overflow: hidden;
+      background: white; /* White cards */
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+      position: relative;
+    }
 
-    .rotary-wheel {
-      position: absolute;
-      top: 0;
-      left: 0;
-      transition: transform 0.6s ease-in-out;
-    }
+    .rotary-wheel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: transform 0.6s ease-in-out;
+    }
 
-    .rotary-digit {
-      height: 80px;
-      width: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.8em;
-      color: black; /* Black digits */
-    }
+    .rotary-digit {
+      height: 80px;
+      width: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8em;
+      color: black; /* Black digits */
+    }
 
-    .dollar {
-      font-size: 2.8em;
-      color: black;
-      margin-right: 12px;
-    }
-  </style>
+    .dollar {
+      font-size: 2.8em;
+      color: black;
+      margin-right: 12px;
+    }
+  </style>
 </head>
 <body>
-  <div class="center-wrapper">
-    <div class="dollar">$</div>
-    <div class="counter" id="counter"></div>
-  </div>
+  <div class="center-wrapper">
+    <div class="dollar">$</div>
+    <div class="counter" id="counter"></div>
+  </div>
 
-  <script>
-    const START_DATE = new Date('2025-01-01T00:00:00Z').getTime();
-    const DOLLARS_PER_SECOND = 10775;
-    const DIGIT_HEIGHT = 80;
+  <script>
+    const START_DATE = new Date('2025-01-01T00:00:00Z').getTime();
+    const DOLLARS_PER_SECOND = 10775;
+    const DIGIT_HEIGHT = 80;
 
-    const counter = document.getElementById('counter');
-    let digitStates = [];
+    const counter = document.getElementById('counter');
+    let digitStates = [];
 
-    function createDigitElement() {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'digit-wrapper';
+    function createDigitElement() {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'digit-wrapper';
 
-      const wheel = document.createElement('div');
-      wheel.className = 'rotary-wheel';
+      const wheel = document.createElement('div');
+      wheel.className = 'rotary-wheel';
 
-      for (let i = 0; i <= 9; i++) {
-        const digit = document.createElement('div');
-        digit.className = 'rotary-digit';
-        digit.textContent = i;
-        wheel.appendChild(digit);
-      }
+      for (let i = 0; i <= 9; i++) {
+        const digit = document.createElement('div');
+        digit.className = 'rotary-digit';
+        digit.textContent = i;
+        wheel.appendChild(digit);
+      }
 
-      wrapper.appendChild(wheel);
-      return { wrapper, wheel };
-    }
+      wrapper.appendChild(wheel);
+      return { wrapper, wheel };
+    }
 
-    function updateDigits(numberStr) {
-      const digits = numberStr.replace(/,/g, '').split('');
+    function updateDigits(numberStr) {
+      const digits = numberStr.replace(/,/g, '').split('');
 
-      // Add new digit slots if needed
-      while (digitStates.length < digits.length) {
-        const { wrapper, wheel } = createDigitElement();
-        counter.appendChild(wrapper);
-        digitStates.push({ wheel, value: '0' });
-      }
+      // Add new digit slots if needed
+      while (digitStates.length < digits.length) {
+        const { wrapper, wheel } = createDigitElement();
+        counter.appendChild(wrapper);
+        digitStates.push({ wheel, value: '0' });
+      }
 
-      // Update each digit's wheel position
-      digits.forEach((digit, i) => {
-        if (!/\d/.test(digit)) return;
+      // Update each digit's wheel position
+      digits.forEach((digit, i) => {
+        if (!/\d/.test(digit)) return;
 
-        const state = digitStates[i];
-        if (state.value !== digit) {
-          const yOffset = -parseInt(digit) * DIGIT_HEIGHT;
-          state.wheel.style.transform = `translateY(${yOffset}px)`;
-          state.value = digit;
-        }
-      });
-    }
+        const state = digitStates[i];
+        if (state.value !== digit) {
+          const yOffset = -parseInt(digit) * DIGIT_HEIGHT;
+          state.wheel.style.transform = `translateY(${yOffset}px)`;
+          state.value = digit;
+        }
+      });
+    }
 
-    function updateCounter() {
-      const now = Date.now();
-      const seconds = Math.floor((now - START_DATE) / 1000);
-      const cost = seconds * DOLLARS_PER_SECOND;
-      const formatted = Math.floor(cost).toLocaleString('en-US');
-      updateDigits(formatted);
-    }
+    function updateCounter() {
+      const now = Date.now();
+      const seconds = Math.floor((now - START_DATE) / 1000);
+      const cost = seconds * DOLLARS_PER_SECOND;
+      const formatted = Math.floor(cost).toLocaleString('en-US');
+      updateDigits(formatted);
+    }
 
-    // Start and update every second
-    setInterval(updateCounter, 1000);
-    updateCounter();
-  </script>
+    // Start and update every second
+    setInterval(updateCounter, 1000);
+    updateCounter();
+  </script>
 </body>
 </html>
